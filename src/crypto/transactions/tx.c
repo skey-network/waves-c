@@ -1,5 +1,5 @@
 #include "tx.h"
-#include "blake2b/sse/blake2.h"
+#include "blake2b/ref/blake2.h"
 #include "base58/b58.h"
 #include <string.h>
 

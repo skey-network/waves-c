@@ -1,8 +1,11 @@
 #include "crypto_tests.h"
 #include "utils_tests.h"
 #include "tx_tests.h"
+#include <stdlib.h>
 
-void crypto_tests() {
+void crypto_tests()
+{
+
     waves_secure_hash_test();
     waves_public_key_to_address_mainnet_test();
     waves_public_key_to_address_testnet_test();
@@ -16,7 +19,8 @@ void crypto_tests() {
     waves_crypto_sha256_test();
 }
 
-void utils_tests() {
+void utils_tests()
+{
     print_amount_test_1();
     print_amount_test_2();
     print_amount_test_3();
@@ -26,9 +30,18 @@ void utils_tests() {
     print_amount_test_7();
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
+    printf("init weak rand...\n");
+    srand(0);
+    printf("c std version %li\n", __STDC_VERSION__);
+    printf("crypto_tests\n");
     crypto_tests();
+    printf("test_data_tx_bytes(\n");
     test_data_tx_bytes();
+    printf("test_data_tx_building\n");
     test_data_tx_building();
+    printf("utils_tests\n");
     utils_tests();
+    printf("DONE\n");
 }

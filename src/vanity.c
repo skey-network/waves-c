@@ -34,11 +34,14 @@
 #include<unistd.h>
 #include<sys/statvfs.h>
 
-#include"crypto/blake2b/sse/blake2.h"
+#include<getopt.h>
+
+#include"crypto/blake2b/ref/blake2.h"
 #include"crypto/base58/b58.h"
 #include"crypto/sha256.h"
 #include"crypto/crypto.h"
 
+#include "vanity_utils_c99.h"
 
 const int ITERATIONS_PER_LOOP = 513;
 
@@ -190,11 +193,11 @@ int generate_addresses(bool testnet, int iterations, vanity_settings *settings, 
         waves_public_key_to_address(pub_key, network_id, address_bin);
         base58_encode((char*)address, address_bin, sizeof(address_bin));
 
-//        for(int u = 0 ; u < strlen(address) ; u++)
-//           heat_map[u][base58char_to_i(address[u])]++;
+        //        for(int u = 0 ; u < strlen(address) ; u++)
+        //           heat_map[u][base58char_to_i(address[u])]++;
 
-//        fprintf(stderr, "Seed: %s\n", seed);
-//        fprintf(stderr, "Address: %s\n", address);
+        //        fprintf(stderr, "Seed: %s\n", seed);
+        //        fprintf(stderr, "Address: %s\n", address);
 
         if(check_mask(settings, address))
             return i;
@@ -421,21 +424,21 @@ vanity_settings parse_settings(int argc, char **argv) {
     while ((c = getopt (argc, argv, "hm:t:c:n:")) != -1)
         switch (c)
         {
-          case 'h':
+        case 'h':
             help(argv);
             exit(0);
-          case 'm':
+        case 'm':
             if(strlen(optarg) > 35) {
                 help(argv);
                 exit(1);
             }
             memcpy(settings.mask, optarg, strlen(optarg));
             break;
-          case 'c':
+        case 'c':
             validate_case_mask(optarg);
             memcpy(settings.case_mask, optarg, strlen(optarg));
             break;
-          case 'n':
+        case 'n':
             if(strlen(optarg) > 1 || !(optarg[0] == 't' || optarg[0] == 'm')) {
                 help(argv);
                 exit(1);
@@ -445,17 +448,17 @@ vanity_settings parse_settings(int argc, char **argv) {
             else if(optarg[0] == 'm')
                 settings.testnet = false;
             break;
-          case 't':
+        case 't':
             settings.threads = atoi(optarg);
             break;
 
-          case '?':
+        case '?':
             if (isprint (optopt))
                 printf("Unknown option -%c.\n\n", optopt);
 
             help(argv);
             exit(1);
-          default:
+        default:
             abort();
         }
 
@@ -501,11 +504,11 @@ int main(int argc, char **argv) {
     printf("Starting workers...\n");
 
     for(int i = 0 ; i < settings.threads ; i++) {
-       int rc = pthread_create(&threads[i], &attr, worker_thread, (void *)&workers[i]);
+        int rc = pthread_create(&threads[i], &attr, worker_thread, (void *)&workers[i]);
        if(rc) {
-          printf("ERROR; return code from pthread_create() is %d\n", rc);
-          exit(-1);
-       }
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
+        }
     }
 
     while(true) {
@@ -537,8 +540,8 @@ int main(int argc, char **argv) {
 
             printf("  95%% chance: %llud%lluuh %dm %ds", probability_95_h / 24, probability_95_h % 24, probability_95_m, probability_95_s);
             printf("          \r");
-//            print_heat_map();
-//            print_heat_map_f();
+            //            print_heat_map();
+            //            print_heat_map_f();
             fflush(stdout);
         } else {
             printf("\nOverall iterations: %llu\nAddress: %s\nPassword: %s\n", iterations, address, seed);

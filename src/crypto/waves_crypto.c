@@ -1,12 +1,13 @@
 #include <assert.h>
 // #include <openssl/rand.h>
+#include <stdlib.h>
 // esp32 libs for random
-#include "esp_system.h" 
+// #include "esp_system.h"
 #include <keygen.h>
 
 #include "crypto.h"
 // use non-sse version
-#include "blake2b/ref/blake2.h" 
+#include "blake2b/ref/blake2.h"
 #include "sha256.h"
 #include "sha3.h"
 #include "sha256.h"
@@ -52,10 +53,19 @@ void waves_gen_public_key(curve25519_public_key pubkey, curve25519_secret_key pr
     curve25519_keygen(pubkey, privkey);
 }
 
+void fillRandom(unsigned char *target, int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        target[i] = rand(); // USE BETTER SOURCE OF RANDOM - THIS ONE IS FOR TEST ONLY
+    }
+}
+
 bool waves_sign_message(const curve25519_secret_key private_key, const unsigned char *message, const size_t message_size,
-                            curve25519_signature signature) {
+                        curve25519_signature signature)
+{
     unsigned char random[64];
-    esp_fill_random(random, 64); // use esp hardware rng
+    fillRandom(random, 64);
     return waves_sign_message_custom_random(private_key, message, message_size, signature, random);
 }
 
